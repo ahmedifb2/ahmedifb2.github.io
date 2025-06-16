@@ -1,284 +1,486 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHMEDVPN - Доступ к VLESS</title>
-    <style>
-        /* CSS код начинается здесь */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); /* Красивый градиент */
-            color: #e0e0e0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .container {
-            background-color: rgba(30, 30, 50, 0.9); /* Полупрозрачный фон */
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            padding: 40px;
-            width: 90%;
-            max-width: 800px;
-            text-align: center;
-            backdrop-filter: blur(8px); /* Эффект размытия */
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .header {
-            margin-bottom: 40px;
-        }
-
-        .header h1 {
-            font-size: 2.8em;
-            color: #4CAF50; /* Зеленый акцент */
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
-        }
-
-        .header p {
-            font-size: 1.2em;
-            color: #b0b0b0;
-        }
-
-        .auth-section, .vpn-key-section {
-            background-color: rgba(40, 40, 60, 0.8);
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .auth-section h2, .vpn-key-section h2 {
-            font-size: 1.8em;
-            color: #4CAF50;
-            margin-bottom: 25px;
-        }
-
-        .password-input-group {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        #passwordInput {
-            padding: 15px 20px;
-            border: 1px solid #555;
-            border-radius: 8px;
-            background-color: #333;
-            color: #fff;
-            font-size: 1.1em;
-            width: 60%;
-            max-width: 300px;
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        #passwordInput:focus {
-            border-color: #4CAF50;
-            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-        }
-
-        #loginButton {
-            padding: 15px 30px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        #loginButton:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-        }
-
-        .error-message {
-            color: #ff6347; /* Томатный красный для ошибок */
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 1em;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .vpn-key-section {
-            padding: 30px;
-        }
-
-        .key-display-wrapper {
-            background-color: #2a2a40;
-            border: 1px dashed #4CAF50;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-            word-break: break-all; /* Разрывать длинные слова */
-            white-space: pre-wrap; /* Сохранять переносы строк, если есть */
-            text-align: left;
-            position: relative;
-            box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.1);
-        }
-
-        .vless-key {
-            font-family: 'Roboto Mono', 'Courier New', monospace;
-            font-size: 0.95em;
-            color: #90ee90; /* Светло-зеленый */
-            user-select: all; /* Позволяет легко выделить текст */
-            padding-right: 60px; /* Для кнопки копирования */
-        }
-
-        .copy-button {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background-color: #007bff; /* Синий для кнопки копирования */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
-        }
-
-        .copy-button:hover {
-            background-color: #0056b3;
-        }
-
-        .instruction {
-            font-size: 0.95em;
-            color: #c0c0c0;
-            margin-top: 20px;
-        }
-
-        .footer {
-            margin-top: 40px;
-            font-size: 0.85em;
-            color: #888;
-        }
-
-        /* Адаптивный дизайн */
-        @media (max-width: 768px) {
-            .container {
-                padding: 25px;
-            }
-
-            .header h1 {
-                font-size: 2em;
-            }
-
-            .header p {
-                font-size: 1em;
-            }
-
-            .auth-section h2, .vpn-key-section h2 {
-                font-size: 1.5em;
-            }
-
-            .password-input-group {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            #passwordInput {
-                width: 80%;
-                max-width: none;
-            }
-
-            #loginButton {
-                width: 80%;
-                max-width: none;
-            }
-        }
-        /* CSS код заканчивается здесь */
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AHMED VPN — Быстрый и безопасный VPN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Основные стили */
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #0f0f0f; 
+      color: #fff;
+      line-height: 1.6;
+    }
+    header {
+      background: #1a1a1a;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: #00ffcc;
+      animation: fadeIn 2s ease-in;
+    }
+    nav {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: #ccc;
+      margin: 0 1rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      color: #00ffcc;
+    }
+    .hero {
+      background: linear-gradient(145deg, #001f3f, #003366);
+      padding: 4rem 2rem;
+      text-align: center;
+      animation: slideIn 1.5s ease-out;
+    }
+    .hero h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      margin-top: 1rem;
+      background: #00ffcc;
+      color: #000;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #00cccc;
+    }
+    section {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      animation: fadeInUp 2s ease-in;
+    }
+    .feature {
+      flex: 1 1 300px;
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .feature:hover {
+      transform: scale(1.05);
+    }
+    .feature h3 {
+      color: #00ffcc;
+    }
+    .pricing {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      animation: fadeInUp 2s ease-in;
+    }
+    .plan {
+      background: #222;
+      padding: 1.5rem;
+      border-radius: 10px;
+      width: 250px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .plan:hover {
+      transform: translateY(-10px);
+    }
+    .plan h4 {
+      color: #00ffcc;
+    }
+    .faq {
+      margin-top: 2rem;
+      animation: fadeInUp 2s ease-in;
+    }
+    .faq-item {
+      margin-bottom: 1rem;
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .faq-item:hover {
+      background: #2a2a2a;
+    }
+    .faq-answer {
+      display: none;
+      margin-top: 0.5rem;
+      color: #ccc;
+    }
+    .slider {
+      max-width: 100%;
+      overflow: hidden;
+      position: relative;
+      margin: 2rem auto;
+      border-radius: 10px;
+      animation: fadeInUp 2s ease-in;
+    }
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .slide {
+      min-width: 100%;
+      box-sizing: border-box;
+      padding: 2rem;
+      text-align: center;
+    }
+    .slide img {
+      max-width: 100%;
+      height: auto;
+    }
+    .reviews {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      animation: fadeInUp 2s ease-in;
+    }
+    .review {
+      flex: 1 1 300px;
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: left;
+    }
+    .review h4 {
+      color: #00ffcc;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .tab-button {
+      padding: 0.5rem 1rem;
+      background: #222;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .tab-button.active {
+      background: #00ffcc;
+      color: #000;
+    }
+    .tab-content {
+      display: none;
+      margin-top: 1rem;
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 10px;
+      animation: fadeInUp 2s ease-in;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 5px;
+      background: #2a2a2a;
+      color: #fff;
+    }
+    .contact-form button {
+      background: #00ffcc;
+      color: #000;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .contact-form button:hover {
+      background: #00cccc;
+    }
+    footer {
+      background: #111;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideIn {
+      0% { transform: translateY(-50px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+      .features, .pricing, .reviews {
+        flex-direction: column;
+        align-items: center;
+      }
+      .tabs {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Добро пожаловать в AHMEDVPN</h1>
-            <p>Ваш надежный и быстрый доступ к интернету.</p>
-        </div>
 
-        <div class="auth-section" id="authSection">
-            <h2>Введите пароль для доступа</h2>
-            <div class="password-input-group">
-                <input type="password" id="passwordInput" placeholder="Введите пароль">
-                <button id="loginButton">Войти</button>
-            </div>
-            <p id="errorMessage" class="error-message"></p>
-        </div>
+<header>
+  <h1>AHMED VPN</h1>
+  <nav>
+    <a href="#features">Преимущества</a>
+    <a href="#pricing">Тарифы</a>
+    <a href="#faq">FAQ</a>
+    <a href="#reviews">Отзывы</a>
+    <a href="#contact">Связь</a>
+  </nav>
+</header>
 
-        <div class="vpn-key-section hidden" id="vpnKeySection">
-            <h2>Ваш ключ VLESS</h2>
-            <div class="key-display-wrapper">
-                <pre class="vless-key" id="vlessKeyDisplay">vless://0b746c18-c8b1-4aeb-a454-2e6af7ea31de@194.33.34.21:54469/?type=tcp&encryption=none&flow=xtls-rprx-vision&sni=google.com&fp=chrome&security=reality&pbk=sVgV6atuZeJJ1oQCz0Xv7zpW7uxbyUJLJVeTNYArMg0&sid=99#AHMEDVPN</pre>
-                <button class="copy-button" onclick="copyToClipboard()">Копировать ключ</button>
-            </div>
-            <p class="instruction">Скопируйте этот ключ и используйте его в вашем VLESS-совместимом клиенте.</p>
-        </div>
+<section class="hero">
+  <h2>Безопасный и быстрый доступ к интернету</h2>
+  <p>Обход цензуры, защита данных, высокая скорость. Поддержка VLESS, Shadowsocks, Reality.</p>
+  <a href="#pricing" class="btn">Выбрать тариф</a>
+</section>
 
-        <div class="footer">
-            <p>&copy; 2024 AHMEDVPN. Все права защищены.</p>
-        </div>
+<section id="features">
+  <h2 style="text-align:center; margin-bottom: 2rem;">Наши преимущества</h2>
+  <div class="features">
+    <div class="feature">
+      <h3>🔒 Анонимность</h3>
+      <p>Скрытие IP-адреса и защита трафика от прослушивания.</p>
     </div>
+    <div class="feature">
+      <h3>⚡ Высокая скорость</h3>
+      <p>Оптимизированные серверы по всему миру обеспечивают минимальные задержки.</p>
+    </div>
+    <div class="feature">
+      <h3>🌍 Глобальные серверы</h3>
+      <p>Доступны серверы в Европе, США, Азии и других регионах.</p>
+    </div>
+    <div class="feature">
+      <h3>📱 Поддержка устройств</h3>
+      <p>Работает на Android, iOS, Windows, macOS и маршрутизаторах.</p>
+    </div>
+    <div class="feature">
+      <h3>🛡️ Обход цензуры</h3>
+      <p>Используем Reality, VLESS и Shadowsocks для обхода блокировок.</p>
+    </div>
+    <div class="feature">
+      <h3>📊 Статистика</h3>
+      <p>Мониторинг скорости, трафика и времени работы в реальном времени.</p>
+    </div>
+  </div>
+</section>
 
-    <script>
-        /* JavaScript код начинается здесь */
-        document.addEventListener('DOMContentLoaded', () => {
-            const passwordInput = document.getElementById('passwordInput');
-            const loginButton = document.getElementById('loginButton');
-            const authSection = document.getElementById('authSection');
-            const vpnKeySection = document.getElementById('vpnKeySection');
-            const errorMessage = document.getElementById('errorMessage');
-            const vlessKeyDisplay = document.getElementById('vlessKeyDisplay');
+<section id="pricing">
+  <h2 style="text-align:center; margin-bottom: 2rem;">Тарифы</h2>
+  <div class="pricing">
+    <div class="plan">
+      <h4>Стартовый</h4>
+      <p>59₽ / 1 день</p>
+      <ul style="list-style: none; padding: 0; color: #ccc;">
+        <li>✓ Тестовое подключение</li>
+        <li>✓ 1 сервер</li>
+        <li>✓ Базовая техподдержка</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <h4>Стандартный</h4>
+      <p>299₽ / 30 дней</p>
+      <ul style="list-style: none; padding: 0; color: #ccc;">
+        <li>✓ Все серверы</li>
+        <li>✓ Приоритетный доступ</li>
+        <li>✓ Техподдержка 24/7</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <h4>VIP</h4>
+      <p>2999₽ / год</p>
+      <ul style="list-style: none; padding: 0; color: #ccc;">
+        <li>✓ Все функции</li>
+        <li>✓ Эксклюзивные серверы</li>
+        <li>✓ Бесплатные обновления</li>
+        <li>✓ Персональный менеджер</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-            // !!! ВАЖНО: Измените этот пароль на более сложный !!!
-            const correctPassword = '12345'; // ИЗМЕНИТЕ ЭТОТ ПАРОЛЬ
+<section id="faq">
+  <h2 style="text-align:center; margin-bottom: 1rem;">Часто задаваемые вопросы</h2>
+  <div class="faq">
+    <div class="faq-item" onclick="toggleAnswer(this)">
+      ❓ Как начать пользоваться?
+      <div class="faq-answer">Установите приложение V2RayNG, NekoBox или Shadowrocket, импортируйте конфигурацию и подключайтесь!</div>
+    </div>
+    <div class="faq-item" onclick="toggleAnswer(this)">
+      ❓ Можно ли использовать бесплатно?
+      <div class="faq-answer">Да! Мы предлагаем бесплатный тестовый период на 1 час. Свяжитесь с нами в Telegram.</div>
+    </div>
+    <div class="faq-item" onclick="toggleAnswer(this)">
+      ❓ Подходит ли для стриминга?
+      <div class="faq-answer">Да, вы можете смотреть Netflix, YouTube, Disney+ и другие сервисы без ограничений.</div>
+    </div>
+    <div class="faq-item" onclick="toggleAnswer(this)">
+      ❓ Какие протоколы поддерживаются?
+      <div class="faq-answer">VLESS + Reality, Shadowsocks, Trojan, V2Ray, XTLS и другие.</div>
+    </div>
+    <div class="faq-item" onclick="toggleAnswer(this)">
+      ❓ Какие устройства поддерживаются?
+      <div class="faq-answer">Android, iOS, Windows, macOS, Linux, маршрутизаторы.</div>
+    </div>
+  </div>
+</section>
 
-            loginButton.addEventListener('click', () => {
-                const enteredPassword = passwordInput.value;
-                if (enteredPassword === correctPassword) {
-                    authSection.classList.add('hidden');
-                    vpnKeySection.classList.remove('hidden');
-                    errorMessage.textContent = ''; // Очистить сообщение об ошибке
-                } else {
-                    errorMessage.textContent = 'Неверный пароль. Пожалуйста, попробуйте еще раз.';
-                    passwordInput.value = ''; // Очистить поле пароля
-                    passwordInput.focus(); // Установить фокус на поле ввода
-                }
-            });
+<section class="slider">
+  <div class="slides" id="slider">
+    <div class="slide"><img src="https://via.placeholder.com/800x300?text=Сервер+в+Нидерландах" alt="Сервер в Нидерландах"></div>
+    <div class="slide"><img src="https://via.placeholder.com/800x300?text=Сервер+в+Японии" alt="Сервер в Японии"></div>
+    <div class="slide"><img src="https://via.placeholder.com/800x300?text=Сервер+в+США" alt="Сервер в США"></div>
+  </div>
+</section>
 
-            // Позволяет нажать Enter для входа
-            passwordInput.addEventListener('keypress', (event) => {
-                if (event.key === 'Enter') {
-                    loginButton.click();
-                }
-            });
-        });
+<section id="reviews">
+  <h2 style="text-align:center; margin-bottom: 2rem;">Отзывы пользователей</h2>
+  <div class="reviews">
+    <div class="review">
+      <h4>Иван, Москва</h4>
+      <p>Отличный сервис! Скорость выше, чем у других VPN. Спасибо за стабильную работу.</p>
+    </div>
+    <div class="review">
+      <h4>Анна, Санкт-Петербург</h4>
+      <p>Простая настройка, поддержка быстро ответила. Рекомендую!</p>
+    </div>
+    <div class="review">
+      <h4>Алексей, Минск</h4>
+      <p>Использую уже полгода. Ни одного сбоя. Лучший выбор для обхода цензуры.</p>
+    </div>
+  </div>
+</section>
 
-        function copyToClipboard() {
-            const vlessKey = document.getElementById('vlessKeyDisplay').textContent;
-            navigator.clipboard.writeText(vlessKey).then(() => {
-                alert('Ключ VLESS скопирован в буфер обмена!');
-            }).catch(err => {
-                console.error('Не удалось скопировать текст: ', err);
-                alert('Не удалось скопировать ключ. Пожалуйста, скопируйте вручную.');
-            });
-        }
-        /* JavaScript код заканчивается здесь */
-    </script>
+<section id="tabs">
+  <h2 style="text-align:center; margin-bottom: 1rem;">Инструкции по настройке</h2>
+  <div class="tabs">
+    <button class="tab-button active" onclick="openTab(event, 'android')">Android</button>
+    <button class="tab-button" onclick="openTab(event, 'ios')">iOS</button>
+    <button class="tab-button" onclick="openTab(event, 'windows')">Windows</button>
+  </div>
+  <div id="android" class="tab-content active">
+    <h3>Настройка на Android</h3>
+    <ol>
+      <li>Установите V2RayNG или NekoBox.</li>
+      <li>Импортируйте конфигурацию через ссылку.</li>
+      <li>Подключайтесь и наслаждайтесь!</li>
+    </ol>
+  </div>
+  <div id="ios" class="tab-content">
+    <h3>Настройка на iPhone</h3>
+    <ol>
+      <li>Установите Shadowrocket.</li>
+      <li>Импортируйте конфигурацию через QR-код.</li>
+      <li>Активируйте подключение.</li>
+    </ol>
+  </div>
+  <div id="windows" class="tab-content">
+    <h3>Настройка на Windows</h3>
+    <ol>
+      <li>Скачайте v2rayN.</li>
+      <li>Импортируйте JSON или ссылку.</li>
+      <li>Выберите сервер и подключайтесь.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="contact">
+  <h2 style="text-align:center; margin-bottom: 1rem;">Связь с нами</h2>
+  <form class="contact-form" onsubmit="submitForm(event)">
+    <input type="text" placeholder="Имя" required>
+    <input type="email" placeholder="Email" required>
+    <textarea rows="5" placeholder="Сообщение" required></textarea>
+    <button type="submit">Отправить</button>
+  </form>
+</section>
+
+<footer>
+  &copy; 2025 AHMED VPN. Все права защищены.<br>
+  Telegram: @AHMED_SUPPORT | Email: support@ahmedvpn.ru<br>
+  <a href="#privacy" onclick="alert('Политика конфиденциальности: мы не собираем ваши данные.')">Политика конфиденциальности</a> 
+</footer>
+
+<script>
+  // FAQ toggle
+  function toggleAnswer(element) {
+    const answer = element.querySelector('.faq-answer');
+    answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Tabs
+  function openTab(evt, tabName) {
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    contents.forEach(content => content.classList.remove('active'));
+    evt.currentTarget.classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+  }
+
+  // Slider
+  let slideIndex = 0;
+  const slides = document.getElementById('slider');
+  function showSlides() {
+    slideIndex++;
+    if (slideIndex >= slides.children.length) slideIndex = 0;
+    slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+    setTimeout(showSlides, 3000);
+  }
+  showSlides();
+
+  // Form validation
+  function submitForm(event) {
+    event.preventDefault();
+    alert('Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.');
+  }
+</script>
+
 </body>
 </html>
