@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AHMED VPN - VLESS Service</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #11111a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font: inherit;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: #0f0f17;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #1a1a2e;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #6c63ff, #8b6efc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav {
+            display: none;
+        }
+
+        .nav.active {
+            display: block;
+        }
+
+        .nav ul {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav ul li {
+            position: relative;
+        }
+
+        .nav ul li a {
+            padding: 0.5rem;
+            position: relative;
+        }
+
+        .nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: #6c63ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav ul li:hover a::after,
+        .nav ul li.active a::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: linear-gradient(90deg, #6c63ff, #8b6efc);
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            color: #6c63ff;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 80px;
+            padding-bottom: 5rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, #6c63ff, #8b6efc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: #b3b3cc;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero-buttons button {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #6c63ff, #8b6efc);
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-buttons button:hover {
+            transform: scale(1.05);
+        }
+
+        .hero-buttons button.secondary {
+            background: transparent;
+            border: 2px solid #6c63ff;
+        }
+
+        .hero-image {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Features Section */
+        .features {
+            background-color: #1a1a2e;
+            padding: 4rem 0;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: #24243a;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #6c63ff;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            color: #b3b3cc;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 4rem 0;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: #6c63ff;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 2rem 2rem 2rem 5rem;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-item:nth-child(even) {
+            padding-left: 2rem;
+            padding-right: 5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 2.5rem;
+            width: 20px;
+            height: 20px;
+            background: #6c63ff;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .timeline-content {
+            background-color: #1a1a2e;
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .timeline-number {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: #24243a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 3;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background-color: #1a1a2e;
+            padding: 4rem 0;
+        }
+
+        .pricing h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            background-color: #24243a;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-header {
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid #33334d;
+        }
+
+        .pricing-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-subtitle {
+            color: #b3b3cc;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6c63ff;
+        }
+
+        .pricing-body {
+            padding: 2rem;
+        }
+
+        .pricing-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-list li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .pricing-list li svg {
+            width: 18px;
+            height: 18px;
+            color: #6c63ff;
+            margin-right: 0.5rem;
+        }
+
+        .pricing-button {
+            background: linear-gradient(90deg, #6c63ff, #8b6efc);
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 4rem 0;
+        }
+
+        .testimonials h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background-color: #1a1a2e;
+            border-radius: 10px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #6c63ff;
+            opacity: 0.1;
+        }
+
+        .testimonial-text {
+            margin-bottom: 1.5rem;
+            color: #b3b3cc;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            background: #6c63ff;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+        }
+
+        .testimonial-role {
+            color: #b3b3cc;
+        }
+
+        /* FAQ Section */
+        .faq {
+            background-color: #1a1a2e;
+            padding: 4rem 0;
+        }
+
+        .faq h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .faq-grid {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #33334d;
+            padding: 1.5rem 0;
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            color: #b3b3cc;
+            display: none;
+            padding-top: 0.5rem;
+        }
+
+        .faq-question svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active svg {
+            transform: rotate(180deg);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #0f0f17;
+            padding: 3rem 0;
+            border-top: 1px solid #1a1a2e;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-column {
+            padding: 1rem 0;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #6c63ff, #8b6efc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-description {
+            color: #b3b3cc;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links li a {
+            color: #b3b3cc;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links li a:hover {
+            color: #6c63ff;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-social a {
+            width: 30px;
+            height: 30px;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            background: #6c63ff;
+        }
+
+        .footer-bottom {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #1a1a2e;
+            text-align: center;
+            color: #55556e;
+        }
+
+        /* VLESS Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 2rem;
+            position: relative;
+            max-width: 600px;
+            width: 90%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.2rem;
+            color: #b3b3cc;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .vless-config {
+            background: #24243a;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .copy-button {
+            background: linear-gradient(90deg, #6c63ff, #8b6efc);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        /* Responsive styles */
+        @media (min-width: 768px) {
+            .nav {
+                display: block;
+            }
+
+            .mobile-menu {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .timeline-item {
+                padding: 2rem 1rem 2rem 3rem;
+            }
+
+            .timeline-item:nth-child(even) {
+                padding-left: 1rem;
+                padding-right: 3rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">AHMED VPN</div>
+                <nav class="nav" id="main-nav">
+                    <ul>
+                        <li><a href="#home" class="active">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </nav>
+                <button class="cta-button" onclick="openModal()">Get VLESS Config</button>
+                <button class="mobile-menu" onclick="toggleMenu()" id="mobile-menu-btn">&#9776;</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="container">
+                <h1>Secure Your Connection with <span>AHMED VPN</span></h1>
+                <p>Experience lightning-fast and secure internet access with our revolutionary VLESS protocol technology. Protect your privacy and access content anywhere in the world.</p>
+                <div class="hero-buttons">
+                    <button onclick="alert('This is a demo version. Actual functionality is not available.')">Download App</button>
+                    <button class="secondary" onclick="openModal()">Get VLESS Config</button>
+                </div>
+                <div class="hero-image">
+                    <img src="https://picsum.photos/800/400"  alt="VPN Illustration">
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="container">
+                <h2>Why Choose <span>AHMED</span> VPN?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-title">Lightning Fast</div>
+                        <div class="feature-description">Enjoy ultra-fast connections with our optimized global network infrastructure.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <div class="feature-title">Military Grade Security</div>
+                        <div class="feature-description">Protect your data with AES-256 encryption and next-generation VLESS protocol.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌍</div>
+                        <div class="feature-title">Global Coverage</div>
+                        <div class="feature-description">Connect to servers in over 50 countries with one click.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-title">Cross-Platform</div>
+                        <div class="feature-description">Use AHMED on all your devices - Android, iOS, Windows, Mac, and Linux.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works" id="how-it-works">
+            <div class="container">
+                <h2>How It <span>Works</span></h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-number">1</div>
+                        <div class="timeline-content">
+                            <h3>Download & Install</h3>
+                            <p>Get our app from the App Store, Google Play, or desktop platforms.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">2</div>
+                        <div class="timeline-content">
+                            <h3>Select Server</h3>
+                            <p>Choose from our global network of high-speed servers in over 50 countries.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">3</div>
+                        <div class="timeline-content">
+                            <h3>Connect Securely</h3>
+                            <p>Establish a secure connection with one click and browse anonymously.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing" id="pricing">
+            <div class="container">
+                <h2>Pricing <span>Plans</span></h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <div class="pricing-title">Free Trial</div>
+                            <div class="pricing-subtitle">Limited features for testing</div>
+                            <div class="pricing-price">FREE</div>
+                        </div>
+                        <div class="pricing-body">
+                            <ul class="pricing-list">
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Limited bandwidth
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    1 device
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Basic security
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Limited servers
+                                </li>
+                            </ul>
+                            <button class="pricing-button">Start Free Trial</button>
+                        </div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <div class="pricing-title">Pro</div>
+                            <div class="pricing-subtitle">Premium experience</div>
+                            <div class="pricing-price">$9.99/mo</div>
+                        </div>
+                        <div class="pricing-body">
+                            <ul class="pricing-list">
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Unlimited bandwidth
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    5 devices
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Advanced security
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    All servers
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Priority support
+                                </li>
+                            </ul>
+                            <button class="pricing-button">Subscribe Now</button>
+                        </div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <div class="pricing-title">Enterprise</div>
+                            <div class="pricing-subtitle">For businesses and teams</div>
+                            <div class="pricing-price">$29.99/mo</div>
+                        </div>
+                        <div class="pricing-body">
+                            <ul class="pricing-list">
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Unlimited bandwidth
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Unlimited devices
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Custom security
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    All servers + dedicated
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Dedicated support
+                                </li>
+                                <li>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Custom integrations
+                                </li>
+                            </ul>
+                            <button class="pricing-button">Contact Sales</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <div class="container">
+                <h2>What Our <span>Users</span> Say</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"I've tried many VPN services, but AHMED is by far the fastest and most reliable. The VLESS protocol makes a huge difference in performance!"</div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">AM</div>
+                            <div>
+                                <div class="testimonial-name">Ali Mohamed</div>
+                                <div class="testimonial-role">Freelance Developer</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"The interface is clean and intuitive. Connecting to different servers is super easy, and I love how lightweight the app is on my phone."</div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">SR</div>
+                            <div>
+                                <div class="testimonial-name">Sara Rahman</div>
+                                <div class="testimonial-role">Marketing Professional</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"As a frequent traveler, AHMED has been a lifesaver. I can access all my favorite content no matter where I am in the world."</div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">KM</div>
+                            <div>
+                                <div class="testimonial-name">Kamal Mehta</div>
+                                <div class="testimonial-role">Digital Nomad</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq" id="faq">
+            <div class="container">
+                <h2>Frequently Asked <span>Questions</span></h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            What is VLESS protocol?
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            VLESS is a lightweight, secure, and multiplexing proxy protocol designed for high-performance scenarios. It's known for its efficiency and low latency, making it perfect for modern internet usage.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Is AHMED VPN free to use?
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            We offer a free trial version with limited features, but our full-featured premium plans provide the best experience with unlimited bandwidth and advanced security features.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            How many devices can I use with one account?
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Our free plan allows one device, while the Pro plan supports up to 5 devices simultaneously. Enterprise plans offer unlimited device connections.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Does AHMED keep logs of my activity?
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Absolutely not! We have a strict no-logs policy. Your online activities, browsing history, and personal information are never recorded or stored.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            What platforms does AHMED support?
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            AHMED works on all major platforms including Windows, macOS, Linux, Android, and iOS. We also provide browser extensions for Chrome and Firefox.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            How do I get VLESS configuration files?
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            You can easily generate VLESS configuration files through our app or website once you've subscribed to one of our plans. The configurations can be imported into compatible clients like Xray or V2Ray.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">AHMED VPN</div>
+                    <div class="footer-description">Secure your internet connection with our advanced VLESS protocol technology.</div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Refund Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <div class="footer-social">
+                        <a href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.04c-5.5 0-9.96 4.48-9.96 9.96 0 4.42 2.87 8.17 6.84 9.47.5.09.68-.22.68-.48l-.01-1.7c-2.79.61-3.38-1.34-3.38-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.69.92.69 1.85l-.01 2.75c0 .26.18.58.69.48 4.0-1.3 6.84-5.06 6.84-9.48 0-5.47-4.45-9.95-9.95-9.95z"/></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4c3.96 0 7.2 3.24 7.2 7.2v8.4c0 3.96-3.24 7.2-7.2 7.2h-8.4c-3.96 0-7.2-3.24-7.2-7.2v-8.4c0-3.96 3.24-7.2 7.2-7.2zm6.6 3.6c-2.208 0-4 1.792-4 4s1.792 4 4 4 4-1.792 4-4-1.792-4-4-4zm0 13.92c-2.592 0-4.8-1.968-4.8-4.32s2.208-4.32 4.8-4.32 4.8 1.968 4.8 4.32-2.208 4.32-4.8 4.32z"/></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2023 AHMED VPN. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal" id="vless-modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal()">×</div>
+            <div class="modal-title">VLESS Configuration</div>
+            <p>Copy the configuration below to use with your VLESS client:</p>
+            <pre class="vless-config" id="vless-config">
+{
+  "v": "2",
+  "ps": "AHMED VPN - Tokyo",
+  "add": "192.0.2.1",
+  "port": "443",
+  "id": "5c4a2b8d-1e90-4f3c-b3c0-1a5a3f7b9c0d",
+  "aid": "0",
+  "scy": "none",
+  "net": "tcp",
+  "type": "none",
+  "host": "vpn.ahmed.com",
+  "path": "/",
+  "tls": "tls",
+  "sni": "vpn.ahmed.com",
+  "alpn": "http/1.1"
+}
+            </pre>
+            <button class="copy-button" onclick="copyToClipboard()">Copy Configuration</button>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            document.getElementById('main-nav').classList.toggle('active');
+            document.getElementById('mobile-menu-btn').textContent = 
+                document.getElementById('main-nav').classList.contains('active') ? '×' : '☰';
+        }
+
+        // FAQ toggle
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const isOpen = element.classList.contains('active');
+            
+            // Close all FAQs
+            document.querySelectorAll('.faq-question').forEach(q => {
+                q.classList.remove('active');
+                q.querySelector('svg').style.transform = 'rotate(0deg)';
+                q.nextElementSibling.style.display = 'none';
+            });
+            
+            // If not open, open this one
+            if (!isOpen) {
+                element.classList.add('active');
+                element.querySelector('svg').style.transform = 'rotate(180deg)';
+                answer.style.display = 'block';
+            }
+        }
+
+        // Scroll to section
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active link
+                    document.querySelectorAll('.nav ul li').forEach(li => {
+                        li.classList.remove('active');
+                    });
+                    
+                    const navItem = this.closest('li');
+                    if (navItem) {
+                        navItem.classList.add('active');
+                    }
+                    
+                    // Close mobile menu after click
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('main-nav').classList.remove('active');
+                        document.getElementById('mobile-menu-btn').textContent = '☰';
+                    }
+                }
+            });
+        });
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('vless-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('vless-modal').style.display = 'none';
+        }
+
+        // Copy to clipboard
+        function copyToClipboard() {
+            const text = document.getElementById('vless-config').innerText;
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Configuration copied to clipboard!');
+            }, function(err) {
+                alert('Could not copy text: ', err);
+            });
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('vless-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Active link on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav ul li');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                const currentNav = document.querySelector(`.nav ul li a[href="#${sectionId}"]`);
+                
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    if (currentNav) {
+                        currentNav.parentElement.classList.add('active');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
